@@ -12,12 +12,17 @@ on:
         required: false
         default: false
         type: boolean
+      persist_catalog:
+        description: Commit the projected catalog to this pilot branch
+        required: false
+        default: false
+        type: boolean
   repository_dispatch:
     types:
       - termbrio-release-pilot
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: cross-repo-release-pilot
@@ -61,8 +66,34 @@ jobs:
           --catalog catalog/latest.json
           --output out/catalog/latest.json
 
+      - name: Persist candidate catalog
+        if: ${{ inputs.persist_catalog }}
+        id: persist-catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp out/catalog/latest.json catalog/latest.json
+
+          changed=false
+          if ! git diff --quiet -- catalog/latest.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email \
+              "41898282+github-actions[bot]@users.noreply.github.com"
+            git add catalog/latest.json
+            git commit -m "Update pilot release catalog"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+            changed=true
+          fi
+
+          {
+            echo "changed=$changed"
+            echo "revision=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Build website catalog event
         shell: bash
+        env:
+          RELEASE_SOURCE_REVISION: ${{ steps.persist-catalog.outputs.revision || github.sha }}
         run: |
           set -euo pipefail
           node -e '
@@ -72,7 +103,7 @@ jobs:
             const event = {
               schemaVersion: 1,
               sourceRepository: "termbrio/releases",
-              sourceRevision: process.env.GITHUB_SHA,
+              sourceRevision: process.env.RELEASE_SOURCE_REVISION,
               catalog
             };
             fs.writeFileSync(
@@ -126,8 +157,8 @@ jobs:
           {
             echo "## Cross-repo release event pilot"
             echo
-            echo "- External mutations: none"
+            echo "- Repository mutation: ${{ inputs.persist_catalog && 'pilot catalog branch' || 'none' }}"
             echo "- Website dispatch: ${{ github.event_name == 'repository_dispatch' || inputs.dispatch_website }}"
             echo "- GitHub Release publication: disabled"
-            echo "- Catalog commit: disabled"
+            echo "- Catalog persistence requested: ${{ inputs.persist_catalog }}"
           } >> "$GITHUB_STEP_SUMMARY"
