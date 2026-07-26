@@ -1,0 +1,76 @@
+name: Cross-repo release event pilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: JSON release event payload
+        required: true
+        type: string
+  repository_dispatch:
+    types:
+      - termbrio-release-pilot
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cross-repo-release-pilot
+  cancel-in-progress: false
+
+jobs:
+  project:
+    name: Validate and project release event
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PAYLOAD_JSON: ${{ github.event_name == 'repository_dispatch' && toJSON(github.event.client_payload) || inputs.payload }}
+
+    steps:
+      - name: Check out release ledger
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Materialize untrusted event payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          node -e '
+            const fs = require("node:fs");
+            const payload = JSON.parse(process.env.PAYLOAD_JSON);
+            fs.writeFileSync(
+              "out/event.json",
+              `${JSON.stringify(payload, null, 2)}\n`,
+              "utf8");
+          '
+
+      - name: Project candidate catalog
+        run: >-
+          node scripts/project-release-event.mjs
+          --payload out/event.json
+          --catalog catalog/latest.json
+          --output out/catalog/latest.json
+
+      - name: Upload projection evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-event-pilot-${{ github.run_id }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Summarize dry run
+        shell: bash
+        run: |
+          {
+            echo "## Cross-repo release event pilot"
+            echo
+            echo "- External mutations: none"
+            echo "- GitHub Release publication: disabled"
+            echo "- Catalog commit: disabled"
+          } >> "$GITHUB_STEP_SUMMARY"
