@@ -3,6 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node scripts/validate-catalog.mjs"
+    "check": "node scripts/validate-catalog.mjs && node scripts/test-project-release-event.mjs"
   }
 }

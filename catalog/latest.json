@@ -7,7 +7,8 @@
     "tag": "product-v0.5.4",
     "sourceRepository": "termbrio/tb",
     "sourceRevision": "ed515fe65adc028a83ee71b543f8a543471d29aa",
-    "releaseUrl": null
+    "releaseUrl": null,
+    "assets": []
   },
   "plugins": {
     "codex": {

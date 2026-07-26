@@ -61,6 +61,50 @@ function optionalReleaseUrl(value) {
   return releaseUrl.toString();
 }
 
+function requireReleaseAssets(value, name) {
+  if (!Array.isArray(value)) {
+    throw new Error(`${name} must be an array.`);
+  }
+
+  const seenNames = new Set();
+  return value.map((rawAsset, index) => {
+    const assetName = `${name}[${index}]`;
+    const asset = requireObject(rawAsset, assetName);
+    const fileName = requireString(asset.name, `${assetName}.name`);
+    if (
+      fileName === "." ||
+      fileName === ".." ||
+      fileName.includes("/") ||
+      fileName.includes("\\")
+    ) {
+      throw new Error(`${assetName}.name must be a safe leaf name.`);
+    }
+
+    if (seenNames.has(fileName)) {
+      throw new Error(`${name} contains duplicate asset name ${fileName}.`);
+    }
+    seenNames.add(fileName);
+
+    if (!Number.isSafeInteger(asset.size) || asset.size <= 0) {
+      throw new Error(`${assetName}.size must be a positive safe integer.`);
+    }
+
+    const sha256 = requireString(asset.sha256, `${assetName}.sha256`);
+    if (!/^[0-9a-f]{64}$/i.test(sha256)) {
+      throw new Error(`${assetName}.sha256 must be a SHA256 digest.`);
+    }
+
+    return {
+      name: fileName,
+      kind: requireString(asset.kind, `${assetName}.kind`),
+      platform: requireString(asset.platform, `${assetName}.platform`),
+      runtime: requireString(asset.runtime, `${assetName}.runtime`),
+      size: asset.size,
+      sha256: sha256.toLowerCase(),
+    };
+  });
+}
+
 function requireCatalogShape(catalog) {
   requireObject(catalog, "catalog");
   if (catalog.schemaVersion !== 1) {
@@ -69,6 +113,7 @@ function requireCatalogShape(catalog) {
 
   requireString(catalog.product?.version, "catalog.product.version");
   requireString(catalog.product?.tag, "catalog.product.tag");
+  requireReleaseAssets(catalog.product?.assets, "catalog.product.assets");
   requireString(catalog.plugins?.codex?.version, "catalog.plugins.codex.version");
   requireString(catalog.plugins?.claude?.version, "catalog.plugins.claude.version");
   requireString(catalog.plugins?.codex?.tag, "catalog.plugins.codex.tag");
@@ -116,9 +161,15 @@ if (eventKind === "product") {
 
   const product = requireObject(payload.product, "product");
   const version = requireString(product.version, "product.version");
+  const assets = requireReleaseAssets(product.assets ?? [], "product.assets");
   const expectedTag = `product-v${version}`;
   if (sourceTag !== expectedTag) {
     throw new Error(`Product tag must be ${expectedTag}.`);
+  }
+  if ((releaseUrl === null) !== (assets.length === 0)) {
+    throw new Error(
+      "Published product events require both releaseUrl and a non-empty asset inventory.",
+    );
   }
 
   catalog.product = {
@@ -127,6 +178,7 @@ if (eventKind === "product") {
     sourceRepository,
     sourceRevision,
     releaseUrl,
+    assets,
   };
 } else {
   if (sourceRepository !== "termbrio/tbmp") {
