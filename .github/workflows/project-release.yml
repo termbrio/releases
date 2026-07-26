@@ -1,4 +1,4 @@
-name: Cross-repo release event pilot
+name: Project release catalog
 
 on:
   workflow_dispatch:
@@ -13,19 +13,19 @@ on:
         default: false
         type: boolean
       persist_catalog:
-        description: Commit the projected catalog to this pilot branch
+        description: Commit the projected catalog to the selected branch
         required: false
         default: false
         type: boolean
   repository_dispatch:
     types:
-      - termbrio-release-pilot
+      - termbrio-release
 
 permissions:
   contents: write
 
 concurrency:
-  group: cross-repo-release-pilot
+  group: release-catalog
   cancel-in-progress: false
 
 jobs:
@@ -35,6 +35,7 @@ jobs:
     timeout-minutes: 5
     env:
       PAYLOAD_JSON: ${{ github.event_name == 'repository_dispatch' && toJSON(github.event.client_payload) || inputs.payload }}
+      PERSIST_CATALOG: ${{ github.event_name == 'repository_dispatch' || inputs.persist_catalog }}
 
     steps:
       - name: Check out release ledger
@@ -67,7 +68,7 @@ jobs:
           --output out/catalog/latest.json
 
       - name: Persist candidate catalog
-        if: ${{ inputs.persist_catalog }}
+        if: ${{ env.PERSIST_CATALOG == 'true' }}
         id: persist-catalog
         shell: bash
         run: |
@@ -80,7 +81,7 @@ jobs:
             git config user.email \
               "41898282+github-actions[bot]@users.noreply.github.com"
             git add catalog/latest.json
-            git commit -m "Update pilot release catalog"
+            git commit -m "Update release catalog"
             git push origin "HEAD:${GITHUB_REF_NAME}"
             changed=true
           fi
@@ -139,26 +140,25 @@ jobs:
               {
                 owner: "termbrio",
                 repo: "website",
-                event_type: "termbrio-catalog-pilot",
+                event_type: "termbrio-catalog",
                 client_payload: clientPayload
               });
 
       - name: Upload projection evidence
         uses: actions/upload-artifact@v7
         with:
-          name: release-event-pilot-${{ github.run_id }}
+          name: release-event-${{ github.run_id }}
           path: out/
           if-no-files-found: error
           retention-days: 3
 
-      - name: Summarize dry run
+      - name: Summarize projection
         shell: bash
         run: |
           {
-            echo "## Cross-repo release event pilot"
+            echo "## Release catalog projection"
             echo
-            echo "- Repository mutation: ${{ inputs.persist_catalog && 'pilot catalog branch' || 'none' }}"
+            echo "- Catalog persistence: $PERSIST_CATALOG"
             echo "- Website dispatch: ${{ github.event_name == 'repository_dispatch' || inputs.dispatch_website }}"
             echo "- GitHub Release publication: disabled"
-            echo "- Catalog persistence requested: ${{ inputs.persist_catalog }}"
           } >> "$GITHUB_STEP_SUMMARY"
