@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "channel": "pilot",
-  "updatedAt": "2026-07-26T20:00:42.6384906Z",
+  "updatedAt": "2026-07-26T20:02:47.7607928Z",
   "product": {
     "version": "0.5.4",
     "tag": "product-v0.5.4",
@@ -14,14 +14,14 @@
       "version": "0.4.2+codex.20260725",
       "tag": "plugins-v0.4.2",
       "sourceRepository": "termbrio/tbmp",
-      "sourceRevision": "702c0fe864e5b46f91c306180f496508f1a81fd2",
+      "sourceRevision": "9cce01b4058f5c99fe63d8bdd7fa096612df1ab9",
       "releaseUrl": null
     },
     "claude": {
       "version": "0.4.2",
       "tag": "plugins-v0.4.2",
       "sourceRepository": "termbrio/tbmp",
-      "sourceRevision": "702c0fe864e5b46f91c306180f496508f1a81fd2",
+      "sourceRevision": "9cce01b4058f5c99fe63d8bdd7fa096612df1ab9",
       "releaseUrl": null
     }
   }
