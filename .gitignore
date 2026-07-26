@@ -1,0 +1,5 @@
+/.tmp/
+/.staging/
+*.zip
+*.tar.gz
+*.apk

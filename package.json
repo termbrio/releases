@@ -1,0 +1,8 @@
+{
+  "name": "termbrio-release-catalog",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/validate-catalog.mjs"
+  }
+}

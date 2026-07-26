@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "channel": "pilot",
+  "updatedAt": null,
+  "product": {
+    "version": "0.5.4",
+    "tag": "product-v0.5.4",
+    "sourceRepository": "termbrio/tb",
+    "sourceRevision": null,
+    "releaseUrl": null
+  },
+  "plugins": {
+    "codex": {
+      "version": "0.4.2+codex.20260725",
+      "tag": "plugins-v0.4.2",
+      "sourceRepository": "termbrio/tbmp",
+      "sourceRevision": null,
+      "releaseUrl": null
+    },
+    "claude": {
+      "version": "0.4.2",
+      "tag": "plugins-v0.4.2",
+      "sourceRepository": "termbrio/tbmp",
+      "sourceRevision": null,
+      "releaseUrl": null
+    }
+  }
+}
