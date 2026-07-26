@@ -7,6 +7,11 @@ on:
         description: JSON release event payload
         required: true
         type: string
+      dispatch_website:
+        description: Send the projected catalog to termbrio/website
+        required: false
+        default: false
+        type: boolean
   repository_dispatch:
     types:
       - termbrio-release-pilot
@@ -56,6 +61,57 @@ jobs:
           --catalog catalog/latest.json
           --output out/catalog/latest.json
 
+      - name: Build website catalog event
+        shell: bash
+        run: |
+          set -euo pipefail
+          node -e '
+            const fs = require("node:fs");
+            const catalog = JSON.parse(
+              fs.readFileSync("out/catalog/latest.json", "utf8"));
+            const event = {
+              schemaVersion: 1,
+              sourceRepository: "termbrio/releases",
+              sourceRevision: process.env.GITHUB_SHA,
+              catalog
+            };
+            fs.writeFileSync(
+              "out/catalog-event.json",
+              `${JSON.stringify(event, null, 2)}\n`,
+              "utf8");
+          '
+
+      - name: Create website App token
+        if: ${{ github.event_name == 'repository_dispatch' || inputs.dispatch_website }}
+        id: website-app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.TERMBRIO_RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.TERMBRIO_RELEASE_APP_PRIVATE_KEY }}
+          owner: termbrio
+          repositories: website
+
+      - name: Dispatch validated catalog event
+        if: ${{ github.event_name == 'repository_dispatch' || inputs.dispatch_website }}
+        uses: actions/github-script@v9
+        env:
+          CATALOG_EVENT_PATH: ./out/catalog-event.json
+        with:
+          github-token: ${{ steps.website-app-token.outputs.token }}
+          script: |
+            const fs = require("node:fs");
+            const clientPayload = JSON.parse(
+              fs.readFileSync(process.env.CATALOG_EVENT_PATH, "utf8"));
+
+            await github.request(
+              "POST /repos/{owner}/{repo}/dispatches",
+              {
+                owner: "termbrio",
+                repo: "website",
+                event_type: "termbrio-catalog-pilot",
+                client_payload: clientPayload
+              });
+
       - name: Upload projection evidence
         uses: actions/upload-artifact@v4
         with:
@@ -71,6 +127,7 @@ jobs:
             echo "## Cross-repo release event pilot"
             echo
             echo "- External mutations: none"
+            echo "- Website dispatch: ${{ github.event_name == 'repository_dispatch' || inputs.dispatch_website }}"
             echo "- GitHub Release publication: disabled"
             echo "- Catalog commit: disabled"
           } >> "$GITHUB_STEP_SUMMARY"
