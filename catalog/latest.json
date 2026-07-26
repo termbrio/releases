@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "channel": "pilot",
-  "updatedAt": null,
+  "updatedAt": "2026-07-26T19:33:45.2515227Z",
   "product": {
     "version": "0.5.4",
     "tag": "product-v0.5.4",
     "sourceRepository": "termbrio/tb",
-    "sourceRevision": null,
+    "sourceRevision": "14480c03bf261eda0abf5b2fd27ce7951e780b7f",
     "releaseUrl": null
   },
   "plugins": {
