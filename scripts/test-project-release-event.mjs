@@ -86,6 +86,61 @@ try {
     throw new Error("Invalid product asset digest was accepted.");
   }
 
+  const pluginReleaseUrl =
+    "https://github.com/termbrio/tbmp/releases/tag/v0.4.3";
+  const pluginPayload = {
+    schemaVersion: 1,
+    eventKind: "plugins",
+    channel: "pilot",
+    createdAt: "2026-07-27T00:00:00.0000000Z",
+    source: {
+      repository: "termbrio/tbmp",
+      revision,
+      tag: "v0.4.3",
+    },
+    releaseUrl: pluginReleaseUrl,
+    plugins: {
+      releaseVersion: "0.4.3",
+      codexVersion: "0.4.3+codex.20260727",
+      claudeVersion: "0.4.3",
+    },
+  };
+  await writeFile(
+    payloadPath,
+    `${JSON.stringify(pluginPayload, null, 2)}\n`,
+    "utf8",
+  );
+
+  const pluginSuccess = runProjector(payloadPath, outputPath);
+  if (pluginSuccess.status !== 0) {
+    throw new Error(
+      `Plugin event projection failed:\n${pluginSuccess.stdout}\n${pluginSuccess.stderr}`,
+    );
+  }
+
+  const pluginProjected = JSON.parse(await readFile(outputPath, "utf8"));
+  if (
+    pluginProjected.plugins.codex.version !==
+      "0.4.3+codex.20260727" ||
+    pluginProjected.plugins.claude.version !== "0.4.3" ||
+    pluginProjected.plugins.codex.tag !== "v0.4.3" ||
+    pluginProjected.plugins.codex.releaseUrl !== pluginReleaseUrl ||
+    pluginProjected.plugins.claude.releaseUrl !== pluginReleaseUrl
+  ) {
+    throw new Error("Published plugin release metadata was not projected.");
+  }
+
+  pluginPayload.plugins.claudeVersion = "0.4.2";
+  await writeFile(
+    payloadPath,
+    `${JSON.stringify(pluginPayload, null, 2)}\n`,
+    "utf8",
+  );
+  const mismatchedPlugin = runProjector(payloadPath, outputPath);
+  if (mismatchedPlugin.status === 0) {
+    throw new Error("Mismatched plugin release versions were accepted.");
+  }
+
   process.stdout.write("release event projection tests passed\n");
 } finally {
   await rm(temporaryRoot, { force: true, recursive: true });

@@ -28,5 +28,5 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate catalog
-        run: node scripts/validate-catalog.mjs
+      - name: Validate catalog and release events
+        run: npm run check

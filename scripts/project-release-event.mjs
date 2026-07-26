@@ -198,7 +198,16 @@ if (eventKind === "product") {
     plugins.claudeVersion,
     "plugins.claudeVersion",
   );
-  const expectedTag = `plugins-v${releaseVersion}`;
+  const codexBaseVersion = codexVersion.replace(/\+.*/, "");
+  if (
+    releaseVersion !== codexBaseVersion ||
+    releaseVersion !== claudeVersion
+  ) {
+    throw new Error(
+      "Plugin release version must match the Codex base and Claude versions.",
+    );
+  }
+  const expectedTag = `v${releaseVersion}`;
   if (sourceTag !== expectedTag) {
     throw new Error(`Plugin tag must be ${expectedTag}.`);
   }
