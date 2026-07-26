@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">Termbrio mark</title>
+  <defs><clipPath id="circle-clip"><circle cx="128" cy="128" r="104" /></clipPath></defs>
+  <g clip-path="url(#circle-clip)">
+    <g transform="rotate(45 128 128)">
+      <path id="top-slice" fill="#F97316" d="M0 0H256V110H138Q134 110 131 108L94 78Q92 75 89 74H87Q85 75 82 78L41 108Q38 110 34 110H0Z" />
+      <path id="bottom-slice" fill="#C24735" transform="rotate(180 128 128)" d="M0 0H256V110H138Q134 110 131 108L94 78Q92 75 89 74H87Q85 75 82 78L41 108Q38 110 34 110H0Z" />
+    </g>
+  </g>
+</svg>
