@@ -104,7 +104,9 @@ responsibilities:
 
 1. immutable product packages are attached to GitHub Releases;
 2. `catalog/latest.json` records the selected product and plugin versions,
-   exact source revisions, tags, and public release links.
+   exact source revisions, tags, and public release links;
+3. `catalog/changelog.json` is the append-only public product/plugin release
+   history projected from reviewed source changelog entries.
 
 Product assets can include Windows, Linux, and macOS packages, the Android APK,
 bootstrap installers, manifests, checksums, and public release notes. Every
@@ -130,5 +132,8 @@ not require matching version numbers.
 node scripts/validate-catalog.mjs
 ```
 
-Catalog changes are automation-owned. Human edits should be limited to
-documentation, schemas, and reviewed release-contract tooling.
+Catalog and changelog projection changes are automation-owned. An exact
+duplicate release event is idempotent; the same component/version with a
+different source revision, entry digest, or prose is rejected. Human edits
+should be limited to documentation, schemas, and reviewed release-contract
+tooling.

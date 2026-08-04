@@ -4,8 +4,13 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
-const catalogPath = path.resolve(scriptDirectory, "..", "catalog", "latest.json");
-const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
+const catalogRoot = path.resolve(scriptDirectory, "..", "catalog");
+const catalog = JSON.parse(
+  await readFile(path.join(catalogRoot, "latest.json"), "utf8"),
+);
+const changelog = JSON.parse(
+  await readFile(path.join(catalogRoot, "changelog.json"), "utf8"),
+);
 
 if (catalog.schemaVersion !== 1) {
   throw new Error("Unsupported release catalog schema.");
@@ -67,4 +72,63 @@ if (catalog.product.tag === catalog.plugins.codex.tag) {
   throw new Error("Product and plugin tags must use independent namespaces.");
 }
 
-process.stdout.write("release catalog is valid\n");
+if (
+  changelog.schemaVersion !== 1 ||
+  typeof changelog.updatedAt !== "string" ||
+  Number.isNaN(Date.parse(changelog.updatedAt)) ||
+  !Array.isArray(changelog.releases)
+) {
+  throw new Error("The public changelog projection is invalid.");
+}
+
+const releaseKeys = new Set();
+for (const release of changelog.releases) {
+  if (
+    release === null ||
+    typeof release !== "object" ||
+    Array.isArray(release) ||
+    !["product", "plugins"].includes(release.component) ||
+    typeof release.version !== "string" ||
+    release.version.length === 0 ||
+    !["pilot", "preview", "stable"].includes(release.channel) ||
+    typeof release.publishedAt !== "string" ||
+    Number.isNaN(Date.parse(release.publishedAt)) ||
+    !["termbrio/tb", "termbrio/tbmp"].includes(release.sourceRepository) ||
+    typeof release.sourceRevision !== "string" ||
+    !/^[0-9a-f]{40}$/.test(release.sourceRevision) ||
+    typeof release.sourceTag !== "string" ||
+    typeof release.entryDigest !== "string" ||
+    !/^[0-9a-f]{64}$/.test(release.entryDigest) ||
+    typeof release.releaseTag !== "string" ||
+    typeof release.summary !== "string" ||
+    release.summary.length === 0 ||
+    /[\r\n<>]/.test(release.summary) ||
+    !Array.isArray(release.changes) ||
+    release.changes.length === 0
+  ) {
+    throw new Error("The public changelog contains an invalid release entry.");
+  }
+
+  const expectedSource =
+    release.component === "product" ? "termbrio/tb" : "termbrio/tbmp";
+  const expectedSourceTag = `v${release.version}`;
+  const expectedReleaseTag =
+    release.component === "product"
+      ? `product-v${release.version}`
+      : expectedSourceTag;
+  if (
+    release.sourceRepository !== expectedSource ||
+    release.sourceTag !== expectedSourceTag ||
+    release.releaseTag !== expectedReleaseTag
+  ) {
+    throw new Error("The public changelog contains inconsistent release identity.");
+  }
+
+  const key = `${release.component}:${release.version}`;
+  if (releaseKeys.has(key)) {
+    throw new Error(`The public changelog contains duplicate release ${key}.`);
+  }
+  releaseKeys.add(key);
+}
+
+process.stdout.write("release catalog and changelog are valid\n");

@@ -60,28 +60,31 @@ jobs:
               "utf8");
           '
 
-      - name: Project candidate catalog
+      - name: Project candidate catalog and changelog
         run: >-
           node scripts/project-release-event.mjs
           --payload out/event.json
           --catalog catalog/latest.json
           --output out/catalog/latest.json
+          --changelog catalog/changelog.json
+          --changelog-output out/catalog/changelog.json
 
-      - name: Persist candidate catalog
+      - name: Persist candidate ledger
         if: ${{ env.PERSIST_CATALOG == 'true' }}
         id: persist-catalog
         shell: bash
         run: |
           set -euo pipefail
           cp out/catalog/latest.json catalog/latest.json
+          cp out/catalog/changelog.json catalog/changelog.json
 
           changed=false
-          if ! git diff --quiet -- catalog/latest.json; then
+          if ! git diff --quiet -- catalog/latest.json catalog/changelog.json; then
             git config user.name "github-actions[bot]"
             git config user.email \
               "41898282+github-actions[bot]@users.noreply.github.com"
-            git add catalog/latest.json
-            git commit -m "Update release catalog"
+            git add catalog/latest.json catalog/changelog.json
+            git commit -m "Update release ledger"
             git push origin "HEAD:${GITHUB_REF_NAME}"
             changed=true
           fi
@@ -101,11 +104,14 @@ jobs:
             const fs = require("node:fs");
             const catalog = JSON.parse(
               fs.readFileSync("out/catalog/latest.json", "utf8"));
+            const changelog = JSON.parse(
+              fs.readFileSync("out/catalog/changelog.json", "utf8"));
             const event = {
               schemaVersion: 1,
               sourceRepository: "termbrio/releases",
               sourceRevision: process.env.RELEASE_SOURCE_REVISION,
-              catalog
+              catalog,
+              changelog
             };
             fs.writeFileSync(
               "out/catalog-event.json",
@@ -156,9 +162,10 @@ jobs:
         shell: bash
         run: |
           {
-            echo "## Release catalog projection"
+            echo "## Release ledger projection"
             echo
             echo "- Catalog persistence: $PERSIST_CATALOG"
             echo "- Website dispatch: ${{ github.event_name == 'repository_dispatch' || inputs.dispatch_website }}"
+            echo "- Changelog projection: catalog/changelog.json"
             echo "- GitHub Release publication: disabled"
           } >> "$GITHUB_STEP_SUMMARY"
