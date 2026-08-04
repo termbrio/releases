@@ -100,6 +100,7 @@ for (const release of changelog.releases) {
     typeof release.entryDigest !== "string" ||
     !/^[0-9a-f]{64}$/.test(release.entryDigest) ||
     typeof release.releaseTag !== "string" ||
+    typeof release.releaseUrl !== "string" ||
     typeof release.summary !== "string" ||
     release.summary.length === 0 ||
     /[\r\n<>]/.test(release.summary) ||
@@ -116,10 +117,15 @@ for (const release of changelog.releases) {
     release.component === "product"
       ? `product-v${release.version}`
       : expectedSourceTag;
+  const expectedReleaseUrl =
+    release.component === "product"
+      ? `https://github.com/termbrio/releases/releases/tag/${expectedReleaseTag}`
+      : `https://github.com/termbrio/tbmp/releases/tag/${expectedReleaseTag}`;
   if (
     release.sourceRepository !== expectedSource ||
     release.sourceTag !== expectedSourceTag ||
-    release.releaseTag !== expectedReleaseTag
+    release.releaseTag !== expectedReleaseTag ||
+    release.releaseUrl !== expectedReleaseUrl
   ) {
     throw new Error("The public changelog contains inconsistent release identity.");
   }

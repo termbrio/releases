@@ -15,6 +15,54 @@ const PROVIDERS = new Set(["codex", "claude"]);
 const VERSION_PATTERN =
   /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/;
 
+function compareVersions(left, right) {
+  const parse = (value) => {
+    const separator = value.indexOf("-");
+    const core = separator < 0 ? value : value.slice(0, separator);
+    const prerelease = separator < 0 ? null : value.slice(separator + 1).split(".");
+    return {
+      core: core.split(".").map((part) => Number.parseInt(part, 10)),
+      prerelease,
+    };
+  };
+  const leftVersion = parse(left);
+  const rightVersion = parse(right);
+  for (let index = 0; index < 3; index += 1) {
+    if (leftVersion.core[index] !== rightVersion.core[index]) {
+      return leftVersion.core[index] - rightVersion.core[index];
+    }
+  }
+  if (leftVersion.prerelease === null || rightVersion.prerelease === null) {
+    if (leftVersion.prerelease === rightVersion.prerelease) return 0;
+    return leftVersion.prerelease === null ? 1 : -1;
+  }
+
+  const count = Math.max(
+    leftVersion.prerelease.length,
+    rightVersion.prerelease.length,
+  );
+  for (let index = 0; index < count; index += 1) {
+    const leftPart = leftVersion.prerelease[index];
+    const rightPart = rightVersion.prerelease[index];
+    if (leftPart === undefined || rightPart === undefined) {
+      return leftPart === rightPart ? 0 : leftPart === undefined ? -1 : 1;
+    }
+    if (leftPart === rightPart) continue;
+    const leftNumeric = /^\d+$/.test(leftPart);
+    const rightNumeric = /^\d+$/.test(rightPart);
+    if (leftNumeric && rightNumeric) {
+      return Number.parseInt(leftPart, 10) - Number.parseInt(rightPart, 10);
+    }
+    if (leftNumeric !== rightNumeric) return leftNumeric ? -1 : 1;
+    return leftPart.localeCompare(rightPart);
+  }
+  return 0;
+}
+
+function laterTimestamp(left, right) {
+  return Date.parse(left) >= Date.parse(right) ? left : right;
+}
+
 function getArgument(name) {
   const index = process.argv.indexOf(name);
   if (index < 0 || index + 1 >= process.argv.length) {
@@ -260,6 +308,7 @@ const catalogPath = path.resolve(getArgument("--catalog"));
 const outputPath = path.resolve(getArgument("--output"));
 const changelogPath = path.resolve(getArgument("--changelog"));
 const changelogOutputPath = path.resolve(getArgument("--changelog-output"));
+const changelogOnly = process.argv.includes("--changelog-only");
 const payload = JSON.parse(await readFile(payloadPath, "utf8"));
 const baseline = JSON.parse(await readFile(catalogPath, "utf8"));
 const changelogBaseline = JSON.parse(await readFile(changelogPath, "utf8"));
@@ -289,9 +338,10 @@ const releaseUrl = optionalReleaseUrl(payload.releaseUrl);
 const catalog = structuredClone(baseline);
 const changelog = structuredClone(changelogBaseline);
 
-catalog.channel = channel;
-catalog.updatedAt = createdAt;
 let releaseRecord;
+let catalogProduct;
+let catalogPlugins;
+let releaseVersion;
 
 if (eventKind === "product") {
   if (sourceRepository !== "termbrio/tb") {
@@ -299,6 +349,7 @@ if (eventKind === "product") {
   }
   const product = requireObject(payload.product, "product");
   const version = requireString(product.version, "product.version");
+  releaseVersion = version;
   const assets = requireReleaseAssets(product.assets ?? [], "product.assets");
   const release = requireObject(payload.release, "release");
   const artifactTag = requireString(release.tag, "release.tag");
@@ -309,16 +360,24 @@ if (eventKind === "product") {
   if (artifactTag !== `product-v${version}`) {
     throw new Error(`Product artifact tag must be product-v${version}.`);
   }
+  const expectedReleaseUrl =
+    `https://github.com/termbrio/releases/releases/tag/product-v${version}`;
   if (artifactUrl !== releaseUrl) {
     throw new Error("release.url must match releaseUrl.");
   }
-  if ((releaseUrl === null) !== (assets.length === 0)) {
+  if (releaseUrl !== expectedReleaseUrl) {
+    throw new Error(`Product releaseUrl must be ${expectedReleaseUrl}.`);
+  }
+  if (changelogOnly && assets.length !== 0) {
+    throw new Error("Changelog-only product projection must not contain assets.");
+  }
+  if (!changelogOnly && assets.length === 0) {
     throw new Error(
-      "Published product events require both releaseUrl and a non-empty asset inventory.",
+      "Published product events require a non-empty asset inventory.",
     );
   }
   const entry = requireChangelogEntry(payload.changelog, eventKind, version, channel);
-  catalog.product = {
+  catalogProduct = {
     version,
     tag: artifactTag,
     sourceTag,
@@ -346,40 +405,46 @@ if (eventKind === "product") {
     throw new Error("Plugin events must originate from termbrio/tbmp.");
   }
   const plugins = requireObject(payload.plugins, "plugins");
-  const releaseVersion = requireString(
+  const pluginVersion = requireString(
     plugins.releaseVersion,
     "plugins.releaseVersion",
   );
+  releaseVersion = pluginVersion;
   const codexVersion = requireString(plugins.codexVersion, "plugins.codexVersion");
   const claudeVersion = requireString(
     plugins.claudeVersion,
     "plugins.claudeVersion",
   );
   if (
-    releaseVersion !== codexVersion.replace(/\+.*/, "") ||
-    releaseVersion !== claudeVersion
+    pluginVersion !== codexVersion.replace(/\+.*/, "") ||
+    pluginVersion !== claudeVersion
   ) {
     throw new Error(
       "Plugin release version must match the Codex base and Claude versions.",
     );
   }
-  if (sourceTag !== `v${releaseVersion}`) {
-    throw new Error(`Plugin tag must be v${releaseVersion}.`);
+  if (sourceTag !== `v${pluginVersion}`) {
+    throw new Error(`Plugin tag must be v${pluginVersion}.`);
+  }
+  const expectedReleaseUrl =
+    `https://github.com/termbrio/tbmp/releases/tag/v${pluginVersion}`;
+  if (releaseUrl !== expectedReleaseUrl) {
+    throw new Error(`Plugin releaseUrl must be ${expectedReleaseUrl}.`);
   }
   const entry = requireChangelogEntry(
     payload.changelog,
     eventKind,
-    releaseVersion,
+    pluginVersion,
     channel,
   );
   const shared = { tag: sourceTag, sourceRepository, sourceRevision, releaseUrl };
-  catalog.plugins = {
+  catalogPlugins = {
     codex: { version: codexVersion, ...shared },
     claude: { version: claudeVersion, ...shared },
   };
   releaseRecord = {
     component: "plugins",
-    version: releaseVersion,
+    version: pluginVersion,
     channel,
     publishedAt: createdAt,
     sourceRepository,
@@ -393,31 +458,75 @@ if (eventKind === "product") {
   };
 }
 
-requireCatalogShape(catalog);
-if (catalog.product.tag === catalog.plugins.codex.tag) {
-  throw new Error("Product and plugin tags must use independent namespaces.");
-}
-
 const existingRecord = changelog.releases.find(
   (item) =>
     item?.component === releaseRecord.component &&
     item?.version === releaseRecord.version,
 );
 if (existingRecord === undefined) {
+  const currentVersion =
+    eventKind === "product"
+      ? requireString(baseline.product?.version, "catalog.product.version")
+      : requireString(
+          baseline.plugins?.claude?.version,
+          "catalog.plugins.claude.version",
+        );
+  if (compareVersions(releaseVersion, currentVersion) <= 0) {
+    throw new Error(
+      `Out-of-order ${eventKind} release ${releaseVersion} does not advance ${currentVersion}.`,
+    );
+  }
+
+  const latestComponentRecord = changelog.releases
+    .filter((item) => item?.component === releaseRecord.component)
+    .sort((left, right) => {
+      const timeOrder = Date.parse(right.publishedAt) - Date.parse(left.publishedAt);
+      if (timeOrder !== 0) return timeOrder;
+      return compareVersions(right.version, left.version);
+    })[0];
+  const componentTimestampFloor =
+    latestComponentRecord?.publishedAt ?? requireTimestamp(baseline.updatedAt, "catalog.updatedAt");
+  if (Date.parse(createdAt) <= Date.parse(componentTimestampFloor)) {
+    throw new Error(
+      `Out-of-order ${eventKind} release timestamp ${createdAt} does not advance ${componentTimestampFloor}.`,
+    );
+  }
+
   changelog.releases.push(releaseRecord);
+  changelog.updatedAt = laterTimestamp(
+    requireTimestamp(changelog.updatedAt, "catalog changelog.updatedAt"),
+    createdAt,
+  );
+  changelog.releases.sort((left, right) => {
+    const timeOrder = right.publishedAt.localeCompare(left.publishedAt);
+    if (timeOrder !== 0) return timeOrder;
+    const componentOrder = left.component.localeCompare(right.component);
+    if (componentOrder !== 0) return componentOrder;
+    return compareVersions(right.version, left.version);
+  });
+
+  if (!changelogOnly) {
+    if (eventKind === "product") {
+      catalog.product = catalogProduct;
+    } else {
+      catalog.plugins = catalogPlugins;
+    }
+    const previousUpdatedAt = requireTimestamp(catalog.updatedAt, "catalog.updatedAt");
+    if (Date.parse(createdAt) > Date.parse(previousUpdatedAt)) {
+      catalog.channel = channel;
+      catalog.updatedAt = createdAt;
+    }
+  }
 } else if (JSON.stringify(existingRecord) !== JSON.stringify(releaseRecord)) {
   throw new Error(
     `Release history conflict for ${releaseRecord.component} ${releaseRecord.version}.`,
   );
 }
-changelog.updatedAt = createdAt;
-changelog.releases.sort((left, right) => {
-  const timeOrder = right.publishedAt.localeCompare(left.publishedAt);
-  if (timeOrder !== 0) return timeOrder;
-  const componentOrder = left.component.localeCompare(right.component);
-  if (componentOrder !== 0) return componentOrder;
-  return right.version.localeCompare(left.version, undefined, { numeric: true });
-});
+
+requireCatalogShape(catalog);
+if (catalog.product.tag === catalog.plugins.codex.tag) {
+  throw new Error("Product and plugin tags must use independent namespaces.");
+}
 
 await Promise.all([
   mkdir(path.dirname(outputPath), { recursive: true }),
