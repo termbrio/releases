@@ -1,7 +1,52 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-08T19:04:26.0000000Z",
+  "updatedAt": "2026-08-08T21:41:02.0000000Z",
   "releases": [
+    {
+      "component": "product",
+      "version": "0.5.8",
+      "channel": "preview",
+      "publishedAt": "2026-08-08T21:41:02.0000000Z",
+      "sourceRepository": "termbrio/tb",
+      "sourceRevision": "381f85badd3f932f4dc23cf8b93e1c804e6b80b6",
+      "sourceTag": "v0.5.8",
+      "entryDigest": "38fb8f6a07172f2f7f26edeab27d112b982af8ed5e2e9d2663a45d6bdf7b750e",
+      "releaseTag": "product-v0.5.8",
+      "releaseUrl": "https://github.com/termbrio/releases/releases/tag/product-v0.5.8",
+      "summary": "Adds owner-controlled remote teams and capability-aware TeamRelay delivery.",
+      "changes": [
+        {
+          "type": "added",
+          "area": "remote-runtime",
+          "text": "Added owner-controlled remote SessionHost execution through paired Server brokers."
+        },
+        {
+          "type": "added",
+          "area": "team-relay",
+          "text": "Added semantic safe, active-turn, queue, and authorized interrupt delivery policies with per-recipient audit outcomes."
+        },
+        {
+          "type": "changed",
+          "area": "team-operations",
+          "text": "Show placed team members with their Runtime Server while preserving one owner-controlled team definition."
+        },
+        {
+          "type": "fixed",
+          "area": "team-relay",
+          "text": "Preserved canonical remote sender addresses and route replies back to the originating Server."
+        },
+        {
+          "type": "fixed",
+          "area": "session-host",
+          "text": "Hardened remote SessionHost handoff, claim expiry, stop ordering, attach routing, and pre-hook Codex readiness detection."
+        },
+        {
+          "type": "changed",
+          "area": "release",
+          "text": "Added structured product changelog and catalog projection contracts for unattended release delivery."
+        }
+      ]
+    },
     {
       "component": "plugins",
       "version": "0.4.5",
