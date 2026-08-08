@@ -1,5 +1,48 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-27T01:07:27.4489186Z",
-  "releases": []
+  "updatedAt": "2026-08-08T19:04:26.0000000Z",
+  "releases": [
+    {
+      "component": "plugins",
+      "version": "0.4.5",
+      "channel": "preview",
+      "publishedAt": "2026-08-08T19:04:26.0000000Z",
+      "sourceRepository": "termbrio/tbmp",
+      "sourceRevision": "2142c6d3f619807af534ca4a914f867bcbcd5591",
+      "sourceTag": "v0.4.5",
+      "entryDigest": "b0849f6d38cbc9aaaa58dc433ab39bfa066f18e7534e13cb6938ac9ab8ec36c9",
+      "releaseTag": "v0.4.5",
+      "releaseUrl": "https://github.com/termbrio/tbmp/releases/tag/v0.4.5",
+      "summary": "Teaches terminal agents the 0.5.8 remote-team and TeamRelay contracts.",
+      "changes": [
+        {
+          "type": "changed",
+          "area": "team-relay",
+          "text": "Document canonical federated sender addresses, source-Server replies, and exact wildcard recipient scope.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "type": "changed",
+          "area": "team-orchestration",
+          "text": "Document Owner Server authority separately from a paired Runtime Server that hosts a placed terminal.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "type": "changed",
+          "area": "delivery",
+          "text": "Clarify semantic delivery policy outcomes and safe-boundary handling when no working provider turn is observed.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        }
+      ]
+    }
+  ]
 }

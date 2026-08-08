@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "channel": "pilot",
-  "updatedAt": "2026-08-04T00:57:08.9828993Z",
+  "channel": "preview",
+  "updatedAt": "2026-08-08T19:04:26.0000000Z",
   "product": {
     "version": "0.5.7",
     "tag": "product-v0.5.7",
@@ -133,18 +133,18 @@
   },
   "plugins": {
     "codex": {
-      "version": "0.4.4+codex.20260729",
-      "tag": "v0.4.4",
+      "version": "0.4.5+codex.20260808",
+      "tag": "v0.4.5",
       "sourceRepository": "termbrio/tbmp",
-      "sourceRevision": "05132b6a2c020b9d4ed4443587e85135a78aa631",
-      "releaseUrl": "https://github.com/termbrio/tbmp/releases/tag/v0.4.4"
+      "sourceRevision": "2142c6d3f619807af534ca4a914f867bcbcd5591",
+      "releaseUrl": "https://github.com/termbrio/tbmp/releases/tag/v0.4.5"
     },
     "claude": {
-      "version": "0.4.4",
-      "tag": "v0.4.4",
+      "version": "0.4.5",
+      "tag": "v0.4.5",
       "sourceRepository": "termbrio/tbmp",
-      "sourceRevision": "05132b6a2c020b9d4ed4443587e85135a78aa631",
-      "releaseUrl": "https://github.com/termbrio/tbmp/releases/tag/v0.4.4"
+      "sourceRevision": "2142c6d3f619807af534ca4a914f867bcbcd5591",
+      "releaseUrl": "https://github.com/termbrio/tbmp/releases/tag/v0.4.5"
     }
   }
 }
