@@ -1,7 +1,58 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-08T21:41:02.0000000Z",
+  "updatedAt": "2026-08-14T15:45:59.0000000Z",
   "releases": [
+    {
+      "component": "plugins",
+      "version": "0.4.6",
+      "channel": "preview",
+      "publishedAt": "2026-08-14T15:45:59.0000000Z",
+      "sourceRepository": "termbrio/tbmp",
+      "sourceRevision": "c540753e0b76bdb8fd4e618b5cde5b9aca3a18e2",
+      "sourceTag": "v0.4.6",
+      "entryDigest": "841f551bc85e2738d4adf5ee74f12da80ac8f5318baca0f007abf69614a64004",
+      "releaseTag": "v0.4.6",
+      "releaseUrl": "https://github.com/termbrio/tbmp/releases/tag/v0.4.6",
+      "summary": "Teaches agents the canonical schema-6 Team, named-view, and linked-member contracts.",
+      "changes": [
+        {
+          "type": "changed",
+          "area": "team-orchestration",
+          "text": "Author only schema-6 Team files with workspaces, owned agents, persistent linked agents, and named presentation views.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "type": "changed",
+          "area": "team-lifecycle",
+          "text": "Keep owned-member lifecycle independent from view placement, isolate unavailable remote members per member, and recover explicitly stopped incomplete create-once attempts without database resets.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "type": "changed",
+          "area": "remote-runtime",
+          "text": "Use paired workspace and runtime aliases in portable files while retaining stable ownership and authority inside Termbrio Server.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "type": "changed",
+          "area": "team-relay",
+          "text": "Discover authorized linked-into teams through one-hop team_info without recursively expanding federation.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        }
+      ]
+    },
     {
       "component": "product",
       "version": "0.5.8",
