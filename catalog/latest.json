@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "channel": "preview",
-  "updatedAt": "2026-08-14T15:45:59.0000000Z",
+  "updatedAt": "2026-08-14T17:01:24.0000000Z",
   "product": {
-    "version": "0.5.8",
-    "tag": "product-v0.5.8",
-    "sourceTag": "v0.5.8",
+    "version": "0.5.9",
+    "tag": "product-v0.5.9",
+    "sourceTag": "v0.5.9",
     "sourceRepository": "termbrio/tb",
-    "sourceRevision": "381f85badd3f932f4dc23cf8b93e1c804e6b80b6",
-    "releaseUrl": "https://github.com/termbrio/releases/releases/tag/product-v0.5.8",
+    "sourceRevision": "72271a08eb0d1c84626192d9c180262ecdf47c79",
+    "releaseUrl": "https://github.com/termbrio/releases/releases/tag/product-v0.5.9",
     "assets": [
       {
         "name": "install.ps1",
@@ -16,7 +16,7 @@
         "platform": "windows",
         "runtime": "win-x64",
         "size": 1498,
-        "sha256": "c8a76e345d18df64294fe4aa618fdd4b1e03469aa605bdf1d5573ec666e37539"
+        "sha256": "ad98207a8370dac35487c5b1d21c309c35c4a58cfa2edaf038adc01964333600"
       },
       {
         "name": "install.sh",
@@ -24,15 +24,15 @@
         "platform": "posix",
         "runtime": "multi",
         "size": 23343,
-        "sha256": "c8ab570e2725e7c6fd151e082fb3ead79ed8ca42690d467c65e2ea9354e3bdef"
+        "sha256": "4a59ff8aada630698e0cd29c3f1c8901126c3f1c9d7bb9bd6e7473c750e83948"
       },
       {
         "name": "macos-first-test.md",
         "kind": "guide",
         "platform": "macos",
         "runtime": "multi",
-        "size": 6048,
-        "sha256": "50bd163b53ca99af3f17f59376a19e6d432fb462bb2f78aff7eb5778dbf8c918"
+        "size": 6056,
+        "sha256": "88fa18057812556fe50fcde8f454ab0bf3ed2f754a3c0375459b3fa972cff079"
       },
       {
         "name": "SHA256SUMS.txt",
@@ -40,95 +40,95 @@
         "platform": "any",
         "runtime": "any",
         "size": 1897,
-        "sha256": "2ef4f0085b38082e8841583f33fdbca5a24b31e3ee085f1681fff3cda6f7ca3a"
+        "sha256": "74cccd093e230366a1274ebc1f0313d8f87e2fb859d3151528f9928d5bc28498"
       },
       {
-        "name": "termbrio-app-android-0.5.8.apk",
+        "name": "termbrio-app-android-0.5.9.apk",
         "kind": "application",
         "platform": "android",
         "runtime": "universal",
-        "size": 36545091,
-        "sha256": "f80be427a6d3ba2d7206f5e808cf461c63abaf2ec355ed5e78506273da7625c8"
+        "size": 36684355,
+        "sha256": "e966c90f8176839331caabbf20421eae755ba87c4f5e18724b6c7a6d74572607"
       },
       {
-        "name": "termbrio-cli-linux-arm64-C17BC1B7CB88D2433D4D1858D2F0F535CE396380255DA73070EF275CC438A97D.tar.gz",
+        "name": "termbrio-cli-linux-arm64-D7BD999D544C4E803668BC233BACE58E67236D51D0EC8E617D13382D59668FC2.tar.gz",
         "kind": "package",
         "platform": "linux",
         "runtime": "linux-arm64",
-        "size": 47047280,
-        "sha256": "c17bc1b7cb88d2433d4d1858d2f0f535ce396380255da73070ef275cc438a97d"
+        "size": 47089566,
+        "sha256": "d7bd999d544c4e803668bc233bace58e67236d51d0ec8e617d13382d59668fc2"
       },
       {
-        "name": "termbrio-cli-linux-x64-CE22C834D5A5323B6248B934398A357725EBC7CB8483058E375A53C78CF2A66F.tar.gz",
+        "name": "termbrio-cli-linux-x64-644DE4854E826E370BA7B204943640484BF4B9747235AEFE8BFE6A664D300C77.tar.gz",
         "kind": "package",
         "platform": "linux",
         "runtime": "linux-x64",
-        "size": 49612313,
-        "sha256": "ce22c834d5a5323b6248b934398a357725ebc7cb8483058e375a53c78cf2a66f"
+        "size": 49665214,
+        "sha256": "644de4854e826e370ba7b204943640484bf4b9747235aefe8bfe6a664d300c77"
       },
       {
-        "name": "termbrio-cli-osx-arm64-6E7A9E6B6133B0E10C6D75743B950C89639595493C0B0002AC76B47BCC17A0FE.tar.gz",
+        "name": "termbrio-cli-osx-arm64-0E9AA083D69817563349448B8E6F5E84D63741D963BC92839860A9CD1C4CF48D.tar.gz",
         "kind": "package",
         "platform": "macos",
         "runtime": "osx-arm64",
-        "size": 46122154,
-        "sha256": "6e7a9e6b6133b0e10c6d75743b950c89639595493c0b0002ac76b47bcc17a0fe"
+        "size": 46160699,
+        "sha256": "0e9aa083d69817563349448b8e6f5e84d63741d963bc92839860a9cd1c4cf48d"
       },
       {
-        "name": "termbrio-cli-osx-x64-AD9F7139801031DAE52C48D8D6ADF80F9167FDDFAA0D378B95F3E9F6F4DBE662.tar.gz",
+        "name": "termbrio-cli-osx-x64-ECD24E71F42373CA93F6CA9636D44A671AE0804A439CA5CCA31A7E8FDD107A3A.tar.gz",
         "kind": "package",
         "platform": "macos",
         "runtime": "osx-x64",
-        "size": 48827692,
-        "sha256": "ad9f7139801031dae52c48d8d6adf80f9167fddfaa0d378b95f3e9f6f4dbe662"
+        "size": 48886263,
+        "sha256": "ecd24e71f42373ca93f6ca9636d44a671ae0804a439ca5cca31a7e8fdd107a3a"
       },
       {
-        "name": "termbrio-dev-win-x64-F5CD1C13569A559FB9B6895435C5B70C32AC11759DA8DAF9EBF6DF2E8C362D0B.zip",
+        "name": "termbrio-dev-win-x64-8CAA2DDA663E642ECBAA17375BB73BF9163FB0D6873B16490A53D73720893604.zip",
         "kind": "package",
         "platform": "windows",
         "runtime": "win-x64",
-        "size": 283438791,
-        "sha256": "f5cd1c13569a559fb9b6895435c5b70c32ac11759da8daf9ebf6df2e8c362d0b"
+        "size": 283854412,
+        "sha256": "8caa2dda663e642ecbaa17375bb73bf9163fb0d6873b16490a53d73720893604"
       },
       {
-        "name": "termbrio-product-0.5.8-manifest.json",
+        "name": "termbrio-product-0.5.9-manifest.json",
         "kind": "manifest",
         "platform": "any",
         "runtime": "any",
         "size": 6875,
-        "sha256": "eac43a1095d6cef0c8fa63452add1f5a2c25e5dc2be4a352705e194781cd5b13"
+        "sha256": "b31f68e6917a2cfe053db5c17a318e822fefcc78b65aa54d4a4c1943da01f72a"
       },
       {
-        "name": "termbrio-server-linux-arm64-1B0690F691D269D532E72E240660960B2EE6D8691ECED211CDCB4FEEB60C4631.tar.gz",
+        "name": "termbrio-server-linux-arm64-5745AF94C16021814656525D217012291D5D627BB0211DDEC925CF156B176FEA.tar.gz",
         "kind": "package",
         "platform": "linux",
         "runtime": "linux-arm64",
-        "size": 52424838,
-        "sha256": "1b0690f691d269d532e72e240660960b2ee6d8691eced211cdcb4feeb60c4631"
+        "size": 52591666,
+        "sha256": "5745af94c16021814656525d217012291d5d627bb0211ddec925cf156b176fea"
       },
       {
-        "name": "termbrio-server-linux-x64-7D20F82AD2535F6B3B3EA6A4FE9DB84CFCFBCCC636FF30C87F9082D9F607CEF4.tar.gz",
+        "name": "termbrio-server-linux-x64-E290E9535D82E02DE5B75D529171B104825A8548130F127FE5428B6F9A4F58B9.tar.gz",
         "kind": "package",
         "platform": "linux",
         "runtime": "linux-x64",
-        "size": 54991118,
-        "sha256": "7d20f82ad2535f6b3b3ea6a4fe9db84cfcfbccc636ff30c87f9082d9f607cef4"
+        "size": 55167764,
+        "sha256": "e290e9535d82e02de5b75d529171b104825a8548130f127fe5428b6f9a4f58b9"
       },
       {
-        "name": "termbrio-server-osx-arm64-6070D00911DCA090F78237B0841782A64C5FF19EAC70D68DBF61A8626382BC4F.tar.gz",
+        "name": "termbrio-server-osx-arm64-050358E023CA22A846D13F773B106E34DE1081158CD012D3FDB12DE71D80746A.tar.gz",
         "kind": "package",
         "platform": "macos",
         "runtime": "osx-arm64",
-        "size": 51503966,
-        "sha256": "6070d00911dca090f78237b0841782a64c5ff19eac70d68dbf61a8626382bc4f"
+        "size": 51660615,
+        "sha256": "050358e023ca22a846d13f773b106e34de1081158cd012d3fdb12de71d80746a"
       },
       {
-        "name": "termbrio-server-osx-x64-545199AA0B28C1D686FD10F61EA04A2B99AA0FFC22458C24C748F148ABEA2979.tar.gz",
+        "name": "termbrio-server-osx-x64-5851DE1037927787D6A4A1B273DD82C04BDF80F2CE54B5B6F72EDF7E46BFB6FE.tar.gz",
         "kind": "package",
         "platform": "macos",
         "runtime": "osx-x64",
-        "size": 54203593,
-        "sha256": "545199aa0b28c1d686fd10f61ea04a2b99aa0ffc22458c24c748f148abea2979"
+        "size": 54378936,
+        "sha256": "5851de1037927787d6a4a1b273dd82c04bdf80f2ce54b5b6f72edf7e46bfb6fe"
       }
     ]
   },
