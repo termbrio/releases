@@ -1,7 +1,82 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-01T15:52:36.0000000Z",
+  "updatedAt": "2026-10-01T16:19:41.0000000Z",
   "releases": [
+    {
+      "component": "product",
+      "version": "0.5.10",
+      "channel": "preview",
+      "publishedAt": "2026-10-01T16:19:41.0000000Z",
+      "sourceRepository": "termbrio/tb",
+      "sourceRevision": "afec4dd821ad38c5b7270b67607272b43daca4a4",
+      "sourceTag": "v0.5.10",
+      "entryDigest": "f124d8bc786bd9c1ce1abce5d3e63f8d27e5fddee245bd2678069e178039bade",
+      "releaseTag": "product-v0.5.10",
+      "releaseUrl": "https://github.com/termbrio/releases/releases/tag/product-v0.5.10",
+      "summary": "Extends local terminal teams to more CLI agents and improves attach and view recovery.",
+      "changes": [
+        {
+          "type": "added",
+          "area": "assistant-providers",
+          "text": "Added a CLI assistant provider registry so Codex, Claude, and experimental local Antigravity CLI members share Team lifecycle while keeping provider-specific launch, activity, and delivery behavior."
+        },
+        {
+          "type": "changed",
+          "area": "terminal-layouts",
+          "text": "Separated terminal layout selection from Team member identity and kept launcher-specific placement behind layout strategies."
+        },
+        {
+          "type": "fixed",
+          "area": "terminal-attach",
+          "text": "Kept attach watchdog cancellation active through a running-session read and made stopped-session detection deterministic."
+        },
+        {
+          "type": "fixed",
+          "area": "team-views",
+          "text": "Replaced Windows Terminal panels whose attach ended after a session stop while preserving healthy panels and preventing duplicate windows when a stale panel cannot close."
+        },
+        {
+          "type": "changed",
+          "area": "assistant-lifecycle",
+          "text": "Started managed Claude sessions with classic terminal rendering to preserve scroll and text selection in Windows attach views."
+        },
+        {
+          "type": "changed",
+          "area": "assistant-lifecycle",
+          "text": "Started managed Codex create and resume sessions with scrollback-friendly terminal rendering."
+        },
+        {
+          "type": "fixed",
+          "area": "terminal-attach",
+          "text": "Forwarded function-key input through the terminal attach command."
+        },
+        {
+          "type": "fixed",
+          "area": "mobile-web",
+          "text": "Improved mobile and Server Web terminal attachment, including reconnect and retained terminal display behavior."
+        },
+        {
+          "type": "fixed",
+          "area": "team-views",
+          "text": "Reconciled already closed Windows Terminal views without failing Team hide or closing unrelated terminal windows."
+        },
+        {
+          "type": "fixed",
+          "area": "assistant-lifecycle",
+          "text": "Recognized Codex hook review as a pending user interaction and prevented active startup placeholders from satisfying provider readiness."
+        },
+        {
+          "type": "changed",
+          "area": "preview-scope",
+          "text": "Antigravity CLI integration remains experimental and local. Native provider setup and hook or tool approvals remain user-owned; the isolated Codex hook-trust configuration write failure is not automatically repaired by this release."
+        },
+        {
+          "type": "changed",
+          "area": "preview-scope",
+          "text": "Current physical fresh-start, first-hook, desktop, mobile and Server Web acceptance and two-server A10-A12 verification remain incomplete; source tests and package verification do not replace these live checks."
+        }
+      ]
+    },
     {
       "component": "plugins",
       "version": "0.4.7",
