@@ -1,7 +1,44 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-14T17:01:24.0000000Z",
+  "updatedAt": "2026-10-01T15:52:36.0000000Z",
   "releases": [
+    {
+      "component": "plugins",
+      "version": "0.4.7",
+      "channel": "preview",
+      "publishedAt": "2026-10-01T15:52:36.0000000Z",
+      "sourceRepository": "termbrio/tbmp",
+      "sourceRevision": "390c16726b307ce4891991a1e86cf3de6b645e59",
+      "sourceTag": "v0.4.7",
+      "entryDigest": "aec2bb0eed695174c1e83d5843b6b5695d4317762064f15aaff6b8c607706731",
+      "releaseTag": "v0.4.7",
+      "releaseUrl": "https://github.com/termbrio/tbmp/releases/tag/v0.4.7",
+      "summary": "Adds an experimental local Antigravity CLI projection and updates provider hook compatibility for Termbrio 0.5.10.",
+      "changes": [
+        {
+          "type": "added",
+          "area": "agy-integration",
+          "text": "Added a reproducible local Antigravity CLI plugin projection from the shared skills, HTTP MCP endpoint and bounded activity hooks. This is experimental local support, not an Antigravity marketplace publication."
+        },
+        {
+          "type": "fixed",
+          "area": "provider-hooks",
+          "text": "Registered and validated Claude StopFailure and PermissionDenied hook events.",
+          "providers": [
+            "claude"
+          ]
+        },
+        {
+          "type": "changed",
+          "area": "compatibility",
+          "text": "Requires Termbrio 0.5.10 or newer. Native setup, plugin hook trust and tool permissions remain explicit user decisions; experimental AGY live acceptance remains incomplete.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        }
+      ]
+    },
     {
       "component": "product",
       "version": "0.5.9",
