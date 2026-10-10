@@ -1,7 +1,67 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-10T18:25:37.0000000Z",
+  "updatedAt": "2026-10-10T20:29:27.0000000Z",
   "releases": [
+    {
+      "component": "plugins",
+      "version": "0.4.8",
+      "channel": "preview",
+      "publishedAt": "2026-10-10T20:29:27.0000000Z",
+      "sourceRepository": "termbrio/tbmp",
+      "sourceRevision": "820dde47dc6496539bc4d76de4f559747aa4cc4d",
+      "sourceTag": "v0.4.8",
+      "entryDigest": "5608df996cfa2619d7c985759dbda659d605c953427bf51bd6508d9b6b789424",
+      "releaseTag": "v0.4.8",
+      "releaseUrl": "https://github.com/termbrio/tbmp/releases/tag/v0.4.8",
+      "summary": "Clarifies schema-7 linked attach and resume, interactive panels and owner-verified member discovery for Termbrio 0.5.12.",
+      "changes": [
+        {
+          "type": "changed",
+          "area": "team-orchestration",
+          "text": "Author schema-7 Team files and keep schema-6 inputs as attach-default normalization. Show the optional linked startMode: resume setting with an owner-policy YAML example.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "type": "fixed",
+          "area": "skills",
+          "text": "Remove contradictory claims that linked members can never be resumed. Distinguish explicit Team-start restore from attach-only show, view dispatch and reconnect; local Team stop never stops linked members.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "type": "changed",
+          "area": "terminal-attach",
+          "text": "Explain interactive linked panels and explicit read-only viewing without granting lifecycle ownership or bypassing owner input and pairing policy.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "type": "changed",
+          "area": "team-relay",
+          "text": "Document canonical owner-verified one-hop member discovery, unavailable peer results and the separation between linked terminal start mode and provider conversation action.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "type": "changed",
+          "area": "compatibility",
+          "text": "Requires Termbrio 0.5.12 or newer. Product and plugin versions remain independent; no provider hook behavior is changed by this release.",
+          "providers": [
+            "codex",
+            "claude"
+          ]
+        }
+      ]
+    },
     {
       "component": "product",
       "version": "0.5.11",
